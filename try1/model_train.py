@@ -76,8 +76,8 @@ def train_tf(images, labels, parameters, training_epochs = 100):
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     
-    #init = tf.initialize_all_variables()
-    init = tf.global_variables_initializer()
+    init = tf.initialize_all_variables()
+    #init = tf.global_variables_initializer()
     
     with tf.Session() as sess:
         sess.run(init)

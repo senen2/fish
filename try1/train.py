@@ -13,7 +13,7 @@ print "begin"
 dirdata = "../../data/fish/"
 group = "train 64x36"
 #group = "LAG 64x36"
-training_epochs = 3
+training_epochs = 100
 
 images, labels = read_images(dirdata + group)
 parameters = param()

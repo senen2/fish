@@ -9,8 +9,8 @@ import scipy.io
 import sklearn.metrics as sk
 
 def directory():
-    return "/media/papi/0E5684035683EA33/concursos/fish/"
-    #return "/media/papi/CE2CDDEF2CDDD317/concursos/fish/" # bocha
+    #return "/media/papi/0E5684035683EA33/concursos/fish/"
+    return "/media/carlos/CE2CDDEF2CDDD317/concursos/fish/" # bocha
 
 def fish_label(name):
     a = np.zeros(8)
