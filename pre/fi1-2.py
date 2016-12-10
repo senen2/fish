@@ -24,6 +24,7 @@ for file in os.listdir(d1):
         d = {}
         d["x"] = (np.asarray(img, dtype="float16") - 128)/128
         d["y"] = z
+        d["name"] = file        
         t.append(d)
 
 d = {}

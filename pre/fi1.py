@@ -28,6 +28,7 @@ for subdir in os.listdir(directory() + group):
                 d = {}
                 d["x"] = (np.asarray(img, dtype="float16") - 128)/128
                 d["y"] = y
+                d["name"] = file
                 t.append(d)
 
 d = {}

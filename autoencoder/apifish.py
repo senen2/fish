@@ -8,10 +8,6 @@ import numpy as np
 import scipy.io
 import sklearn.metrics as sk
 
-def directory():
-    return "/media/papi/0E5684035683EA33/concursos/fish/"
-    #return "/media/carlos/CE2CDDEF2CDDD317/concursos/fish/" # bocha
-
 def fish_label(name):
     a = np.zeros(8)
     if name == "ALB":
@@ -34,31 +30,19 @@ def fish_label(name):
     return a
 
 def read_images(group):
-    t = scipy.io.loadmat(group)
-    t.pop("__globals__")
-    t.pop("__version__")
-    t.pop("__header__")
-    
-    pos = 0
-    neg = 0
-    nnan = 0
+    d = scipy.io.loadmat(group)
+    #l = [x for x in d]
+    #print len(d), l
+    #print len(d['t']), len(d['t'][0])
+    #z()
     images = []
     labels = []
-    names = []
-    for d in t:
-        if not np.isnan(t[d]["corr"][0][0]).any():
-            images.append(t[d]["corr"][0][0].ravel())
-            if t[d]["label"][0][0][0]==1:
-                labels.append([0, 1])
-                pos +=1
-            else:
-                labels.append([1, 0])
-                neg +=1
-            names.append(d)
-        else:
-            nnan +=1
-    print "data: pos, neg, nan", pos, neg, nnan
-    return np.array(images), np.array(labels), names
+    for t in d['t'][0]:
+#         print t["y"][0][0][0].shape
+#         print t["y"][0][0][0]
+        images.append(t["x"][0][0])
+        labels.append(t["y"][0][0][0])
+    return np.array(images), np.array(labels)
 
 def read_images_balanced(group, balance):
     images, labels, names = read_images(group)

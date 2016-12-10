@@ -37,11 +37,13 @@ def read_images(group):
     #z()
     images = []
     labels = []
+    names = []
     for t in d['t'][0]:
 #         print t["y"][0][0][0].shape
 #         print t["y"][0][0][0]
         images.append(t["x"][0][0])
         labels.append(t["y"][0][0][0])
+        labels.append(t["names"][0][0][0])
     return np.array(images), np.array(labels)
 
 def read_images_balanced(group, balance):
