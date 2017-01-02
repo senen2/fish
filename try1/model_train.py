@@ -79,13 +79,17 @@ def train_tf(images, labels, parameters, training_epochs = 100):
     init = tf.initialize_all_variables()
     #init = tf.global_variables_initializer()
     
-    with tf.Session() as sess:
+    n = images.shape[0]
+    config = tf.ConfigProto( device_count = {'GPU': 0})
+    with tf.Session(config=config) as sess:
         sess.run(init)
     
         # Training cycle
         for epoch in xrange(training_epochs):
-    #         print epoch
-            _, c = sess.run([optimizer, cost], feed_dict={x: images, y: labels, keep_prob: dropout})
+            # s = s[ beginning : beginning + LENGTH]
+            for ix in xrange(0, n, 10):
+                _, c = sess.run([optimizer, cost], feed_dict={x: images[ix: ix+10], y: labels[ix: ix+10], keep_prob: dropout})
+
             #if (epoch+1) % display_step == 0:
             print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c)
                 

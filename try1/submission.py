@@ -13,38 +13,23 @@ from params import param
 print "begin"
 group = "train"
 group = "test"
-sub_file = "submission_conv_48.csv"
+sub_file = "submission_1.csv"
     
 r = []
 r.append(["File", "Class"])
 
-for i in range(3):
-    patient = i+1
-    features = scipy.io.loadmat("resp_%s_new" % patient)
-    #images, labels, names = read_images("%s %s_new" % (group, ii))
-    images, labels, names = read_images("%s_%s_new" % (group, patient))
-    parameters = param(patient)
-    
-    prob = eval_conv(images, parameters, features)
-    
-    p = 0
-    for i in xrange(len(names)):
-#         if prob[i][1] > 0.999:
-#             r.append([names[i] + ".mat", 1])
-#         elif prob[i][1] < 0.001:
-#             r.append([names[i] + ".mat", 0])
-#         else:
-#             r.append([names[i] + ".mat", prob[i][1] ])
+features = scipy.io.loadmat(datadiresp + group +"_resp")
+#images, labels, names = read_images("%s %s_new" % (group, ii))
+images, labels, names = read_images(dirdata + group)
+parameters = param()
 
-        r.append([names[i] + ".mat", prob[i][1] ])
-        if prob[i][1]>0.5:
-            p += 1
+prob = eval_conv(images, parameters, features)
 
-    print "positives", p, "totals", len(names)
-    if group == "train":
-        print "AUC", auc(labels, prob)
+p = 0
+for i in xrange(len(images)):
+    r.append([names[i] + ".mat", prob[i][1] ])
 
-print "gran total", len(r)
+print "image,ALB,BET,DOL,LAG,NoF,OTHER,SHARK,YFT"
 np.savetxt(sub_file, r, delimiter=',', fmt="%s,%s")
 
 print "end"

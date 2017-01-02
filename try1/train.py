@@ -1,6 +1,24 @@
 '''
 Train
+
+best cost 1.16182 epoch 97
+best acc 0.676463 epoch 99
+epochs learning_rate cv1_size cv2_size cv1_channels cv2_channels hidden img_heigth img_width dropout
+    100      0.0005        5       5          16            16        24        64      36      0.5
+Accuracy: 0.676463
+Cost 1.17652
+
+best cost 0.208947 epoch 999
+best acc 0.998676 epoch 952
+epochs learning_rate cv1_size cv2_size cv1_channels cv2_channels hidden img_heigth img_width dropout
+    1000      0.0005        5       5          16            16        24        64      36      0.5
+Accuracy: 0.998147
+Cost 0.208947
+end
+[Finished in 54555.1s]
+
 '''
+
 import tensorflow as tf
 import numpy as np
 from model_eval import *
@@ -15,7 +33,7 @@ group = "train 128x72"
 #group = "LAG 64x36"
 training_epochs = 1000
 
-images, labels = read_images(dirdata + group)
+images, labels, names = read_images(dirdata + group)
 parameters = param()
 #print images.shape, labels.shape, len(names)
 #images, labels, names = read_images_balanced(group, 2)
