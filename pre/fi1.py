@@ -23,7 +23,7 @@ for subdir in os.listdir(directory() + group):
             if not os.path.isdir(d1 + file):
                 #print file
                 img = Image.open(d1 + file)
-                img = img.resize((64,36),Image.ANTIALIAS)
+                img = img.resize((128,72),Image.ANTIALIAS)
                 #img.save(d2 + file)
                 d = {}
                 d["x"] = (np.asarray(img, dtype="float16") - 128)/128
@@ -32,6 +32,6 @@ for subdir in os.listdir(directory() + group):
 
 d = {}
 d["t"] = t
-scipy.io.savemat(dirdata + group + " 64x36", d, do_compression=True)
+scipy.io.savemat(dirdata + group + " 128x72", d, do_compression=True)
 print "end"    
             

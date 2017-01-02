@@ -35,7 +35,7 @@ def train_tf(images, labels, parameters, training_epochs = 100):
     W_conv1 = weight_variable([cv1_size, cv1_size, 3, cv1_channels])
     b_conv1 = bias_variable([cv1_channels])
     
-    x_image = tf.reshape(x, [-1,img_width, img_height,3])
+    x_image = tf.reshape(x, [-1, img_width, img_height,3])
     
     h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
     h_pool1 = max_pool_2x2(h_conv1)
@@ -86,8 +86,8 @@ def train_tf(images, labels, parameters, training_epochs = 100):
         for epoch in xrange(training_epochs):
     #         print epoch
             _, c = sess.run([optimizer, cost], feed_dict={x: images, y: labels, keep_prob: dropout})
-            if (epoch+1) % display_step == 0:
-                print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c)
+            #if (epoch+1) % display_step == 0:
+            print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c)
                 
             if c < best_cost:
                 best_cost = c

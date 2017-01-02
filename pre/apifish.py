@@ -191,10 +191,10 @@ def auc(labels, prob):
 # convolutional
 
 def weight_variable(shape):
-    return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
+    return tf.Variable(tf.truncated_normal(shape, stddev=0.1), dtype=float16)
 
 def bias_variable(shape):
-    return tf.Variable(tf.constant(0.1, shape=shape))
+    return tf.Variable(tf.constant(0.1, shape=shape), dtype=float16)
 
 def conv2d(x, W):
     return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')

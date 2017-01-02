@@ -11,9 +11,9 @@ from apifish import read_images
 
 print "begin"
 dirdata = "../../data/fish/"
-group = "train 64x36"
+group = "train 128x72"
 #group = "LAG 64x36"
-training_epochs = 100
+training_epochs = 1000
 
 images, labels = read_images(dirdata + group)
 parameters = param()
