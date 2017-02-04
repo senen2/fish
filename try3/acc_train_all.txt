@@ -1,0 +1,48 @@
+70%
+accuracy: 13.4498279057 total good int: 508.0
+
+ALB   28.7465940054 total good int: 211
+BET   1.33798720186 total good int: 23
+DOL   6.0           total good int: 12
+LAG   5.12820512821 total good int: 6
+NoF   185.074626866 total good int: 124
+OTHER 6.88172043011 total good int: 32
+SHARK 3.67892976589 total good int: 11
+YFT   50.5681818182 total good int: 89
+
+20% black
+accuracy: 6.3277733651 total good int: 239.0
+
+ALB   0.0           total good int: 0
+BET   5.75916230366 total good int: 99
+DOL   3.0           total good int: 6
+LAG   6.83760683761 total good int: 8
+NoF   108.955223881 total good int: 73
+OTHER 1.50537634409 total good int: 7
+SHARK 6.6889632107  total good int: 20
+YFT   14.7727272727 total good int: 26
+
+20% white
+accuracy: 4.36854646545 total good int: 165.0
+
+ALB   2.32 total good int: 17
+BET   0.35 total good int: 6
+DOL   53.5 total good int: 107
+LAG   0.0  total good int: 0
+NoF   7.46 total good int: 5
+OTHER 1.72 total good int: 8
+SHARK 1.0  total good int: 3
+YFT   10.8 total good int: 19
+
+sumission 8
+auc: 0.496539
+accuracy: 5.87768069897 total good int: 222.0
+
+ALB   1.22 total good int: 21 of 1719
+BET   86.0 total good int: 172 of 200
+DOL   1.71 total good int: 2 of 117
+LAG   2.99 total good int: 2 of 67
+NoF   1.94 total good int: 9 of 465
+OTHER 0.67 total good int: 2 of 299
+SHARK 1.7 total good int: 3 of 176
+YFT   1.5 total good int: 11 of 734
