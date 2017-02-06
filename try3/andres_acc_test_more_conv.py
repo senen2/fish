@@ -11,7 +11,7 @@ from params import param
 import time
 import os
 
-features = scipy.io.loadmat("resp_50_cost_conv7_chan_32")
+features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_1")
 parameters = param()
 files = os.listdir("../../data/fish/train-fix2/")
 # files = os.listdir("../../data/fish/test_stg1_fix/")
@@ -26,8 +26,9 @@ img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
 cv_all_size = 5
-cv_all_channels = 32
+cv_all_channels = 1
 last_img_size = 7
+channels_jpg = 1
 
 filename_queue = tf.train.string_input_producer(
     tf.train.match_filenames_once("../../data/fish/train-fix2/*.jpg"), shuffle=False)
@@ -44,7 +45,6 @@ label_reader = tf.WholeFileReader()
 _ , image_file = image_reader.read(filename_queue)
 _ , label_file = label_reader.read(filename_queue_label)
 
-channels_jpg = 1
 ratio_jpg = 1
 img_height = img_height/ratio_jpg
 img_width = img_width/ratio_jpg
@@ -59,18 +59,18 @@ y = tf.pack([y])
 
 W_conv1 = weight_variable([cv_all_size, cv_all_size, channels_jpg, cv_all_channels])
 b_conv1 = bias_variable([cv_all_channels])
-W_conv2 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv2 = bias_variable([cv_all_channels])
-W_conv3 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv3 = bias_variable([cv_all_channels])
-W_conv4 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv4 = bias_variable([cv_all_channels])
-W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv5 = bias_variable([cv_all_channels])
-W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv6 = bias_variable([cv_all_channels])
-W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-b_conv7 = bias_variable([cv_all_channels])
+W_conv2 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels * 2])
+b_conv2 = bias_variable([cv_all_channels * 2])
+W_conv3 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 2, cv_all_channels * 4])
+b_conv3 = bias_variable([cv_all_channels * 4])
+W_conv4 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 8])
+b_conv4 = bias_variable([cv_all_channels * 8])
+W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 16])
+b_conv5 = bias_variable([cv_all_channels * 16])
+# W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
+# b_conv6 = bias_variable([cv_all_channels])
+# W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
+# b_conv7 = bias_variable([cv_all_channels])
 # W_conv8 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
 # b_conv8 = bias_variable([cv_all_channels])
 # W_conv9 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
@@ -78,7 +78,7 @@ b_conv7 = bias_variable([cv_all_channels])
 # W_conv10 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
 # b_conv10 = bias_variable([cv_all_channels])
 
-W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels, hidden])
+W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels * 16, hidden])
 b_fc1 = bias_variable([hidden])
 W_fc2 = weight_variable([hidden, categories])
 b_fc2 = bias_variable([categories])
@@ -96,10 +96,10 @@ h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
 h_pool4 = max_pool_2x2(h_conv4)
 h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
 h_pool5 = max_pool_2x2(h_conv5)
-h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
-h_pool6 = max_pool_2x2(h_conv6)
-h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
-h_pool7 = max_pool_2x2(h_conv7)
+# h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
+# h_pool6 = max_pool_2x2(h_conv6)
+# h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
+# h_pool7 = max_pool_2x2(h_conv7)
 # h_conv8 = tf.nn.relu(conv2d(h_pool7, W_conv8) + b_conv8)
 # h_pool8 = max_pool_2x2(h_conv8)
 # h_conv9 = tf.nn.relu(conv2d(h_pool8, W_conv9) + b_conv9)
@@ -107,7 +107,7 @@ h_pool7 = max_pool_2x2(h_conv7)
 # h_conv10 = tf.nn.relu(conv2d(h_pool9, W_conv10) + b_conv10)
 # h_pool10 = max_pool_2x2(h_conv10)
 
-h_pool_last_flat = tf.reshape(h_pool7, [-1, last_img_size * last_img_size  * cv_all_channels])
+h_pool_last_flat = tf.reshape(h_pool5, [-1, last_img_size * last_img_size  * cv_all_channels * 16])
 
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, 1)
@@ -179,10 +179,10 @@ with tf.Session() as sess:
 		    b_conv4:features["b_conv4"][0],
 		    W_conv5:features["W_conv5"],
 		    b_conv5:features["b_conv5"][0],
-		    W_conv6:features["W_conv6"],
-		    b_conv6:features["b_conv6"][0],
-		    W_conv7:features["W_conv7"],
-		    b_conv7:features["b_conv7"][0],
+		    # W_conv6:features["W_conv6"],
+		    # b_conv6:features["b_conv6"][0],
+		    # W_conv7:features["W_conv7"],
+		    # b_conv7:features["b_conv7"][0],
 		    W_fc1:features["W_fc1"],
 		    b_fc1:features["b_fc1"][0],
 		    W_fc2:features["W_fc2"],
