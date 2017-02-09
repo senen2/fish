@@ -32,10 +32,10 @@ paths = [[nom_path + "/ALB/",1],[nom_path + "/BET/",2],[nom_path + "/DOL/",3],
 
 # high_img_w = 0
 # high_img_h = 0
-# high_img_w = 1736
-# high_img_h = 976
-high_img_w = 224
-high_img_h = 224
+high_img_w = 1792
+high_img_h = 1792
+# high_img_w = 224
+# high_img_h = 224
 # high_img_w = 896
 # high_img_h = 896
 c_w = 0
@@ -72,7 +72,7 @@ for p in paths:
 	for file in files:
 		# if count == max_count :
 		# 	break
-		print file, total_count2*100.0/total_count
+		print file, round(total_count2*100.0/total_count,2)
 		total_count2 += 1
 
 		f = open(path_to_label + file + '.txt', 'w')
@@ -82,8 +82,9 @@ for p in paths:
 		f.close()
 
 		img = Image.open(path + file, 'r')
-		img.thumbnail((high_img_w, high_img_h), Image.ANTIALIAS)
-		img_w, img_h = img.size
+		if img_w > high_img_w:
+			img.thumbnail((high_img_w, high_img_h), Image.ANTIALIAS)
+			img_w, img_h = img.size
 
 		background = Image.new('RGB', (high_img_w, high_img_h), (0, 0, 0))
 		bg_w, bg_h = background.size

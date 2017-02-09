@@ -14,7 +14,7 @@ from params import param
 import time
 
 print "initialize"
-training_epochs = 10000
+training_epochs = 3000000
 display_step = 1
 
 parameters = param()
@@ -27,14 +27,15 @@ img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
 learning_rate = parameters["learning_rate"]
-dropout = parameters["dropout"]
-save_epoch = 1000
+# dropout = parameters["dropout"]
+dropout = 0.5
+save_epoch = 100
 cv_all_size = 5
 cv_all_channels = 1
-last_img_size = 7
+last_img_size = 5
 batch_size = 1
 channels_jpg = 1
-mat_name_file = "_conv5_diff_chan_" + str(cv_all_channels)
+mat_name_file = "_conv8_diff_chan_" + str(cv_all_channels)
 
 best_cost = 1e99
 best_acc = 0
@@ -79,18 +80,18 @@ W_conv4 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all
 b_conv4 = bias_variable([cv_all_channels * 8])
 W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 16])
 b_conv5 = bias_variable([cv_all_channels * 16])
-# W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-# b_conv6 = bias_variable([cv_all_channels])
-# W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-# b_conv7 = bias_variable([cv_all_channels])
-# W_conv8 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
-# b_conv8 = bias_variable([cv_all_channels])
+W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 16, cv_all_channels * 32])
+b_conv6 = bias_variable([cv_all_channels * 32])
+W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 32, cv_all_channels * 64])
+b_conv7 = bias_variable([cv_all_channels * 64])
+W_conv8 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 64, cv_all_channels * 128])
+b_conv8 = bias_variable([cv_all_channels * 128])
 # W_conv9 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
 # b_conv9 = bias_variable([cv_all_channels])
 # W_conv10 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
 # b_conv10 = bias_variable([cv_all_channels])
 
-W_fc1 = weight_variable([last_img_size * last_img_size * (cv_all_channels * 16), hidden])
+W_fc1 = weight_variable([last_img_size * last_img_size * (cv_all_channels * 128), hidden])
 b_fc1 = bias_variable([hidden])
 W_fc2 = weight_variable([hidden, categories])
 b_fc2 = bias_variable([categories])
@@ -108,18 +109,18 @@ h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
 h_pool4 = max_pool_2x2(h_conv4)
 h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
 h_pool5 = max_pool_2x2(h_conv5)
-# h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
-# h_pool6 = max_pool_2x2(h_conv6)
-# h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
-# h_pool7 = max_pool_2x2(h_conv7)
-# h_conv8 = tf.nn.relu(conv2d(h_pool7, W_conv8) + b_conv8)
-# h_pool8 = max_pool_2x2(h_conv8)
+h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
+h_pool6 = max_pool_2x2(h_conv6)
+h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
+h_pool7 = max_pool_2x2(h_conv7)
+h_conv8 = tf.nn.relu(conv2d(h_pool7, W_conv8) + b_conv8)
+h_pool8 = max_pool_2x2(h_conv8)
 # h_conv9 = tf.nn.relu(conv2d(h_pool8, W_conv9) + b_conv9)
 # h_pool9 = max_pool_2x2(h_conv9)
 # h_conv10 = tf.nn.relu(conv2d(h_pool9, W_conv10) + b_conv10)
 # h_pool10 = max_pool_2x2(h_conv10)
 
-h_pool_last_flat = tf.reshape(h_pool5, [-1, last_img_size * last_img_size  * (cv_all_channels * 16)])
+h_pool_last_flat = tf.reshape(h_pool8, [-1, last_img_size * last_img_size  * (cv_all_channels * 128)])
 
 # full conected
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
@@ -135,8 +136,8 @@ print "h_conv2", h_conv2
 print "h_pool2", h_pool2
 
 # cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred + 1e-20), reduction_indices=[1]))
-# cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
-cost = (tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y)) + tf.reduce_mean(tf.reduce_sum(tf.abs(tf.subtract(y,pred)),1)))/2.0
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+# cost = (tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y)) + tf.reduce_mean(tf.reduce_sum(tf.abs(tf.subtract(y,pred)),1)))/2.0
 # _, roc = tf.contrib.metrics.streaming_auc(pred, y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
 # cost = (tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y)) + roc)/2.0
 # cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(pred, y))
@@ -166,7 +167,7 @@ with tf.Session() as sess:
     for epoch in xrange(training_epochs):
         _, c, acc = sess.run([optimizer, cost, accuracy], feed_dict={keep_prob: dropout})
 
-        print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c),"dropout: 0.5 bad acc:", round(acc*100.0,2),"%"
+        print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c),"dropout:",dropout,"bad acc:", round(acc*100.0,2),"%"
             
         if epoch%save_epoch == 0:
             alb = 0
@@ -248,10 +249,12 @@ with tf.Session() as sess:
             features["b_conv4"] = b_conv4.eval()
             features["W_conv5"] = W_conv5.eval()
             features["b_conv5"] = b_conv5.eval()
-            # features["W_conv6"] = W_conv6.eval()
-            # features["b_conv6"] = b_conv6.eval()
-            # features["W_conv7"] = W_conv7.eval()
-            # features["b_conv7"] = b_conv7.eval()
+            features["W_conv6"] = W_conv6.eval()
+            features["b_conv6"] = b_conv6.eval()
+            features["W_conv7"] = W_conv7.eval()
+            features["b_conv7"] = b_conv7.eval()
+            features["W_conv8"] = W_conv8.eval()
+            features["b_conv8"] = b_conv8.eval()
             features["W_fc1"] = W_fc1.eval()
             features["b_fc1"] = b_fc1.eval()
             features["W_fc2"] = W_fc2.eval()
@@ -271,10 +274,12 @@ with tf.Session() as sess:
     features["b_conv4"] = b_conv4.eval()
     features["W_conv5"] = W_conv5.eval()
     features["b_conv5"] = b_conv5.eval()
-    # features["W_conv6"] = W_conv6.eval()
-    # features["b_conv6"] = b_conv6.eval()
-    # features["W_conv7"] = W_conv7.eval()
-    # features["b_conv7"] = b_conv7.eval()
+    features["W_conv6"] = W_conv6.eval()
+    features["b_conv6"] = b_conv6.eval()
+    features["W_conv7"] = W_conv7.eval()
+    features["b_conv7"] = b_conv7.eval()
+    features["W_conv8"] = W_conv8.eval()
+    features["b_conv8"] = b_conv8.eval()
     features["W_fc1"] = W_fc1.eval()
     features["b_fc1"] = b_fc1.eval()
     features["W_fc2"] = W_fc2.eval()
@@ -293,5 +298,5 @@ print ("    %s      %s        %s       %s          %s            %s        %s   
 print "Cost", cost
 
 print "saving last"
-scipy.io.savemat("saving_last_resp" + str(mat_name_file), features, do_compression=True)    
+scipy.io.savemat("resp_50_cost" + str(mat_name_file), features, do_compression=True)    
 print "end"

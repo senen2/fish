@@ -29,7 +29,7 @@ categories = parameters["categories"]
 cv_all_size = 5
 cv_all_channels = 1
 last_img_size = 7
-channels_jpg = 3
+channels_jpg = 1
 
 filename_queue = tf.train.string_input_producer(
     tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), shuffle=False)
