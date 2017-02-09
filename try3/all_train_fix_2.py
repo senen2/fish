@@ -32,10 +32,10 @@ paths = [[nom_path + "/ALB/",1],[nom_path + "/BET/",2],[nom_path + "/DOL/",3],
 
 # high_img_w = 0
 # high_img_h = 0
-high_img_w = 1792
-high_img_h = 1792
-# high_img_w = 224
-# high_img_h = 224
+# high_img_w = 1792
+# high_img_h = 1792
+high_img_w = 224
+high_img_h = 224
 # high_img_w = 896
 # high_img_h = 896
 c_w = 0
@@ -70,8 +70,8 @@ for p in paths:
 	c += 1
 	files = os.listdir(path)
 	for file in files:
-		# if count == max_count :
-		# 	break
+		if count == max_count :
+			break
 		print file, round(total_count2*100.0/total_count,2)
 		total_count2 += 1
 
@@ -82,6 +82,7 @@ for p in paths:
 		f.close()
 
 		img = Image.open(path + file, 'r')
+		img_w, img_h = img.size
 		if img_w > high_img_w:
 			img.thumbnail((high_img_w, high_img_h), Image.ANTIALIAS)
 			img_w, img_h = img.size

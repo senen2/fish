@@ -39,4 +39,6 @@ with tf.Session() as sess:
 		print "step:",step + 1
 		img_name2, lbl_name2 = sess.run([img_n, lbl_n])
 		print "img_name:", img_name2 , "lbl_name:", lbl_name2
+coord.request_stop()
+coord.join(threads)
 sess.close()
