@@ -50,7 +50,7 @@ cv_all_size = 5
 cv_all_channels = 1
 last_img_size = 7
 batch_size = 1
-channels_jpg = 1
+channels_jpg = 3
 mat_name_file = "_conv5_diff_chan_" + str(cv_all_channels)
 
 best_cost = 1e99

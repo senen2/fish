@@ -16,8 +16,10 @@ for file in files:
 	total_count2 += 1
 
 	img = Image.open(nom_path + file, 'r')
-	img.thumbnail((high_img_w, high_img_h), Image.ANTIALIAS)
 	img_w, img_h = img.size
+	if img_w > high_img_w:
+		img.thumbnail((high_img_w, high_img_h), Image.ANTIALIAS)
+		img_w, img_h = img.size
 
 	background = Image.new('RGB', (high_img_w, high_img_h), (0, 0, 0))
 	bg_w, bg_h = background.size

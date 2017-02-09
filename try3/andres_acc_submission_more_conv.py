@@ -29,19 +29,19 @@ categories = parameters["categories"]
 cv_all_size = 5
 cv_all_channels = 1
 last_img_size = 7
-channels_jpg = 1
+channels_jpg = 3
 
 filename_queue = tf.train.string_input_producer(
     tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), shuffle=False)
 
-filename_queue_label = tf.train.string_input_producer(
-    tf.train.match_filenames_once("../../data/fish/label-train-fix/*.txt"), shuffle=False)
+# filename_queue_label = tf.train.string_input_producer(
+#     tf.train.match_filenames_once("../../data/fish/label-train-fix/*.txt"), shuffle=False)
 
 image_reader = tf.WholeFileReader()
-label_reader = tf.WholeFileReader()
+# label_reader = tf.WholeFileReader()
 
-_ , image_file = image_reader.read(filename_queue)
-_ , label_file = label_reader.read(filename_queue_label)
+image_name , image_file = image_reader.read(filename_queue)
+# _ , label_file = label_reader.read(filename_queue_label)
 
 ratio_jpg = 1
 img_height = img_height/ratio_jpg
@@ -50,10 +50,10 @@ img_width = img_width/ratio_jpg
 x = tf.image.decode_jpeg(image_file, channels=channels_jpg, ratio=ratio_jpg)
 x.set_shape([img_height, img_width, channels_jpg])
 
-record_defaults = [[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]]
-col1, col2, col3, col4, col5, col6, col7, col8 = tf.decode_csv(label_file, record_defaults=record_defaults)
-y = tf.pack([col1, col2, col3, col4, col5, col6, col7, col8])
-y = tf.pack([y])
+# record_defaults = [[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]]
+# col1, col2, col3, col4, col5, col6, col7, col8 = tf.decode_csv(label_file, record_defaults=record_defaults)
+# y = tf.pack([col1, col2, col3, col4, col5, col6, col7, col8])
+# y = tf.pack([y])
 
 W_conv1 = weight_variable([cv_all_size, cv_all_size, channels_jpg, cv_all_channels])
 b_conv1 = bias_variable([cv_all_channels])
@@ -115,12 +115,12 @@ print "h_conv1", h_conv1
 print "h_pool1", h_pool1
 print "h_conv2", h_conv2
 print "h_pool2", h_pool2
-correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-pred_arg2 = tf.argmax(pred, 1)
-y_arg2 = tf.argmax(y, 1)
-print "y",y
-print "pred", pred
+# correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+# accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+# pred_arg2 = tf.argmax(pred, 1)
+# y_arg2 = tf.argmax(y, 1)
+# print "y",y
+# print "pred", pred
 
 init = tf.global_variables_initializer()
 acc_total = 0.0
@@ -146,7 +146,7 @@ with tf.Session() as sess:
 		#     W_fc2:features["W_fc2"],
 		#     b_fc2:features["b_fc2"][0]                          
 		#   })
-		prob = sess.run([pred],{ 
+		prob, img_name = sess.run([pred,image_name],{ 
 		    W_conv1:features["W_conv1"],
 		    b_conv1:features["b_conv1"][0],
 		    W_conv2:features["W_conv2"],
@@ -168,9 +168,12 @@ with tf.Session() as sess:
 		  })
 		# print prob
 		prob = prob[0]
-		prob = prob[0]
 		# print prob
-		r.append([files[step], prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7] ])
+		img = img_name[30:]
+		# print img
+		# print str(img), prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7]
+		# break
+		r.append([str(img), prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7]])
 		# acc_total += acc
 		# if step >= 10:
 		# 	break
@@ -181,3 +184,4 @@ with tf.Session() as sess:
 # coord.join(threads)
 # coord.request_stop()
 sess.close()
+print sub_file
