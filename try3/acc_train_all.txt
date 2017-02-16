@@ -1,11 +1,196 @@
-auc: 0.438095
-accuracy: 18.4273232724 total good int: 696.0
+auc: 0.915662
+accuracy: 74.66 total good int: 2820.0
+acc by label: 87.61
 
-ALB   1.28 total good int: 22 of 1719
-BET   2.0 total good int: 4 of 200
-DOL   1.71 total good int: 2 of 117
-LAG   0.0 total good int: 0 of 67
-NoF   0.43 total good int: 2 of 465
-OTHER 0.33 total good int: 1 of 299
-SHARK 4.55 total good int: 8 of 176
-YFT   89.51 total good int: 657 of 734
+ALB   60.73 total good int: 1044 of 1719
+BET   85.0 total good int: 170 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   86.24 total good int: 401 of 465
+OTHER 93.65 total good int: 280 of 299
+SHARK 97.73 total good int: 172 of 176
+YFT   77.52 total good int: 569 of 734
+
+channel 1, 40k epoch
+auc: 0.934877
+accuracy: 78.32 total good int: 2958.0
+acc by label: 88.15
+
+ALB   72.66 total good int: 1249 of 1719
+BET   91.0 total good int: 182 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   83.44 total good int: 388 of 465
+OTHER 91.3 total good int: 273 of 299
+SHARK 97.16 total good int: 171 of 176
+YFT   69.62 total good int: 511 of 734
+
+channel 1, 40k epoch, 117
+auc: 0.952506
+accuracy: 80.96 total good int: 3058.0
+acc by label: 90.75
+
+ALB   73.82 total good int: 1269 of 1719
+BET   95.0 total good int: 190 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   83.87 total good int: 390 of 465
+OTHER 97.99 total good int: 293 of 299
+SHARK 99.43 total good int: 175 of 176
+YFT   75.89 total good int: 557 of 734
+
+channel 1, 40k epoch, 200
+auc: 0.968202
+accuracy: 85.31 total good int: 3222.0
+acc by label: 94.21
+
+ALB   75.04 total good int: 1290 of 1719
+BET   100.0 total good int: 200 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   89.03 total good int: 414 of 465
+OTHER 99.67 total good int: 298 of 299
+SHARK 100.0 total good int: 176 of 176
+YFT   89.92 total good int: 660 of 734
+
+channel 1, 40k epoch, 300
+auc: 0.982578
+accuracy: 91.29 total good int: 3448.0
+acc by label: 96.85
+
+ALB   84.29 total good int: 1449 of 1719
+BET   100.0 total good int: 200 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   96.13 total good int: 447 of 465
+OTHER 100.0 total good int: 299 of 299
+SHARK 100.0 total good int: 176 of 176
+YFT   94.41 total good int: 693 of 734
+
+channel 1, 40k epoch, 300, img 448
+auc: 0.983677
+accuracy: 92.4 total good int: 3490.0
+acc by label: 97.09
+
+ALB   86.85 total good int: 1493 of 1719
+BET   100.0 total good int: 200 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   95.05 total good int: 442 of 465
+OTHER 100.0 total good int: 299 of 299
+SHARK 100.0 total good int: 176 of 176
+YFT   94.82 total good int: 696 of 734
+
+channel 1, 46k epoch, 3000, img 448, conv 5
+auc: 0.999999
+accuracy: 99.92 total good int: 3774.0
+acc by label: 557.65
+cost2 0.00427727634285 cost3 0.00427727530931
+
+ALB   99.88 total good int: 1717 of 1719.0
+BET   99.5 total good int: 199 of 200.0
+DOL   100.0 total good int: 117 of 117.0
+LAG   100.0 total good int: 67 of 67.0
+NoF   100.0 total good int: 465 of 465.0
+OTHER 100.0 total good int: 299 of 299.0
+SHARK 100.0 total good int: 176 of 176.0
+YFT   100.0 total good int: 734 of 734.0
+
+channel 1, 80k epoch, 600
+auc: 0.990539
+accuracy: 95.68 total good int: 3614.0
+acc by label: 98.77
+
+ALB   90.81 total good int: 1561 of 1719
+BET   100.0 total good int: 200 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   100.0 total good int: 465 of 465
+OTHER 100.0 total good int: 299 of 299
+SHARK 100.0 total good int: 176 of 176
+YFT   99.32 total good int: 729 of 734
+
+channel 1, 40k epoch, 400
+auc: 0.987035
+accuracy: 92.64 total good int: 3499.0
+acc by label: 97.62
+
+ALB   85.81 total good int: 1475 of 1719
+BET   100.0 total good int: 200 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   99.35 total good int: 462 of 465
+OTHER 100.0 total good int: 299 of 299
+SHARK 100.0 total good int: 176 of 176
+YFT   95.78 total good int: 703 of 734
+
+resp_50_cost_conv5_diff_chan_1 (copy)
+channel 1, 40k epoch, 150
+auc: 0.948982
+accuracy: 83.74 total good int: 3163.0
+acc by label: 93.26
+
+ALB   72.25 total good int: 1242 of 1719
+BET   99.0 total good int: 198 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   84.95 total good int: 395 of 465
+OTHER 98.66 total good int: 295 of 299
+SHARK 99.43 total good int: 175 of 176
+YFT   91.83 total good int: 674 of 734
+
+channel 1, 40k epoch, 150
+auc: 0.952348
+accuracy: 81.25 total good int: 3069.0
+acc by label: 92.25
+
+ALB   67.89 total good int: 1167 of 1719
+BET   97.5 total good int: 195 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   89.03 total good int: 414 of 465
+OTHER 95.99 total good int: 287 of 299
+SHARK 99.43 total good int: 175 of 176
+YFT   88.15 total good int: 647 of 734
+
+channel 1, 100k epoch, 150
+auc: 0.937155
+accuracy: 82.58 total good int: 3119.0
+acc by label: 92.32
+
+ALB   74.23 total good int: 1276 of 1719
+BET   98.0 total good int: 196 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   89.89 total good int: 418 of 465
+OTHER 98.66 total good int: 295 of 299
+SHARK 99.43 total good int: 175 of 176
+YFT   78.34 total good int: 575 of 734
+
+channel 1, 40k epoch, 150
+auc: 0.948398
+accuracy: 80.01 total good int: 3022.0
+acc by label: 91.39
+
+ALB   67.54 total good int: 1161 of 1719
+BET   94.5 total good int: 189 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   90.32 total good int: 420 of 465
+OTHER 97.32 total good int: 291 of 299
+SHARK 99.43 total good int: 175 of 176
+YFT   82.02 total good int: 602 of 734
+
+channels 8
+auc: 0.923867
+accuracy: 81.71 total good int: 3086.0
+acc by label: 89.1
+
+ALB   77.37 total good int: 1330 of 1719
+BET   85.5 total good int: 171 of 200
+DOL   100.0 total good int: 117 of 117
+LAG   100.0 total good int: 67 of 67
+NoF   82.58 total good int: 384 of 465
+OTHER 91.97 total good int: 275 of 299
+SHARK 97.73 total good int: 172 of 176
+YFT   77.66 total good int: 570 of 734

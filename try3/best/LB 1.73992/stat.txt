@@ -1,0 +1,6 @@
+40k epoch, img 896, full train
+auc: 0.993166
+accuracy: 91.21 total good int: 3445.0
+acc by label: 507.21
+cost2: 1.48240199953 cost3: 2.06158255401
+resp_50_cost_conv7_diff_chan_1

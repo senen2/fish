@@ -36,8 +36,8 @@ img_height = parameters["img_height"]
 categories = parameters["categories"]
 cv_all_size = 5
 cv_all_channels = 1
-last_img_size = 7
-channels_jpg = 3
+last_img_size = 14
+channels_jpg = 1
 
 filename_queue = tf.train.string_input_producer(img_queue, shuffle=False)
 
@@ -116,16 +116,20 @@ h_pool_last_flat = tf.reshape(h_pool5, [-1, last_img_size * last_img_size  * cv_
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, 1)
 pred = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
+pred2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
 print pred
 print "h_conv1", h_conv1
 print "h_pool1", h_pool1
 print "h_conv2", h_conv2
 print "h_pool2", h_pool2
+cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred + 1e-20), reduction_indices=[1]))
+cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred,y))
+# cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=y))
 correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 pred_arg2 = tf.argmax(pred, 1)
 y_arg2 = tf.argmax(y, 1)
-auc2, update_op_auc2 = tf.contrib.metrics.streaming_auc(pred, y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
+auc2, update_op_auc2 = tf.contrib.metrics.streaming_auc(predictions=pred, labels=y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
 
 print "y",y
 print "pred", pred
@@ -142,14 +146,14 @@ other = 0
 shark = 0
 yft = 0
 
-alb2 = 0
-bet2 = 0
-dol2 = 0
-lag2 = 0
-nof2 = 0
-other2 = 0
-shark2 = 0
-yft2 = 0
+alb2 = 1e-20
+bet2 = 1e-20
+dol2 = 1e-20
+lag2 = 1e-20
+nof2 = 1e-20
+other2 = 1e-20
+shark2 = 1e-20
+yft2 = 1e-20
 
 alb_total = 1719
 bet_total = 200
@@ -160,6 +164,8 @@ other_total = 299
 shark_total = 176
 yft_total = 734
 
+total_cost2 = 0
+total_cost3 = 0
 with tf.Session() as sess:
 	sess.run(tf.local_variables_initializer())
 	sess.run(init)
@@ -168,11 +174,12 @@ with tf.Session() as sess:
 	# sleep = 5
 	# print "sleep:",sleep
 	# time.sleep(sleep)
-	r = []
-	r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
+	# r = []
+	# r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
 	for step in xrange(samples):
+		# break
 		print "step:",step
-		prob,correct_prediction2,acc,pred_arg,y_arg,y_tes,update_op_auc,auc = sess.run([pred,correct_prediction,accuracy,pred_arg2,y_arg2,y,update_op_auc2,auc2],{ 
+		prob,correct_prediction2,acc,pred_arg,y_arg,y_tes,update_op_auc,auc, cost2,cost3 = sess.run([pred,correct_prediction,accuracy,pred_arg2,y_arg2,y,update_op_auc2,auc2,cost,cost_1],{ 
 		    W_conv1:features["W_conv1"],
 		    b_conv1:features["b_conv1"][0],
 		    W_conv2:features["W_conv2"],
@@ -197,11 +204,13 @@ with tf.Session() as sess:
 		prob = prob[0]
 		# prob = prob[0]
 		# print prob
-		r.append([files[step], prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7] ])
+		# r.append([files[step], prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7] ])
 		# print files[step], prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7]
 		y_arg = y_arg[0]
 		pred_arg = pred_arg[0]
 		correct_prediction2 = correct_prediction2[0]
+		total_cost2 += cost2
+		total_cost3 += cost3
 		print "auc:", auc,"update_op_auc:",update_op_auc
 		# print
 		# print "False"
@@ -254,24 +263,28 @@ with tf.Session() as sess:
 		# if step >= 30:
 		# 	break
 	auc = auc2.eval()
-	acc_label = (alb*100.0/alb_total + bet*100.0/bet_total + dol*100.0/dol_total + lag*100.0/lag_total +
-				nof*100.0/nof_total + other*100.0/other_total + shark*100.0/shark_total + yft*100.0/yft_total) / 8.0
+	# acc_label = (alb*100.0/alb_total + bet*100.0/bet_total + dol*100.0/dol_total + lag*100.0/lag_total +
+	# 			nof*100.0/nof_total + other*100.0/other_total + shark*100.0/shark_total + yft*100.0/yft_total) / 8.0
+
+	acc_label = (alb*100.0/alb2 + bet*100.0/bet2 + dol*100.0/dol2 + lag*100.0/lag2 +
+				nof*100.0/nof2 + other*100.0/other2 + shark*100.0/shark2 + yft*100.0/yft2) / 8.0
 	print
 	print "auc:", auc
 	print "accuracy:", round(acc_total*100.0/samples,2),"total good int:",acc_total
 	print "acc by label:", round(acc_label,2)
+	print "cost2", total_cost2*1.0/samples, "cost3", total_cost3*1.0/samples
+	
 	print
-	print "ALB  ", round(alb*100.0/alb_total,2),"total good int:",alb, "of", alb_total
-	print "BET  ", round(bet*100.0/bet_total,2),"total good int:",bet, "of", bet_total
-	print "DOL  ", round(dol*100.0/dol_total,2),"total good int:",dol, "of", dol_total
-	print "LAG  ", round(lag*100.0/lag_total,2),"total good int:",lag, "of", lag_total
-	print "NoF  ", round(nof*100.0/nof_total,2),"total good int:",nof, "of", nof_total
-	print "OTHER", round(other*100.0/other_total,2),"total good int:",other, "of", other_total
-	print "SHARK", round(shark*100.0/shark_total,2),"total good int:",shark, "of", shark_total
-	print "YFT  ", round(yft*100.0/yft_total,2),"total good int:",yft, "of", yft_total
+	print "ALB  ", round(alb*100.0/alb2,2),"total good int:",alb, "of", alb2
+	print "BET  ", round(bet*100.0/bet2,2),"total good int:",bet, "of", bet2
+	print "DOL  ", round(dol*100.0/dol2,2),"total good int:",dol, "of", dol2
+	print "LAG  ", round(lag*100.0/lag2,2),"total good int:",lag, "of", lag2
+	print "NoF  ", round(nof*100.0/nof2,2),"total good int:",nof, "of", nof2
+	print "OTHER", round(other*100.0/other2,2),"total good int:",other, "of", other2
+	print "SHARK", round(shark*100.0/shark2,2),"total good int:",shark, "of", shark2
+	print "YFT  ", round(yft*100.0/yft2,2),"total good int:",yft, "of", yft2
 	print
 
-	# print
 	# print "test"
 	# print "ALB  ", round(alb2*100.0/alb_total,2),"total good int:",alb2, "of", alb_total
 	# print "BET  ", round(bet2*100.0/bet_total,2),"total good int:",bet2, "of", bet_total

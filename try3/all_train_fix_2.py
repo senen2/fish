@@ -32,8 +32,8 @@ paths = [[nom_path + "/ALB/",1],[nom_path + "/BET/",2],[nom_path + "/DOL/",3],
 
 # high_img_w = 0
 # high_img_h = 0
-# high_img_w = 1792
-# high_img_h = 1792
+# high_img_w = 448
+# high_img_h = 448
 high_img_w = 224
 high_img_h = 224
 # high_img_w = 896
@@ -42,7 +42,7 @@ c_w = 0
 c_h = 0
 # fix_img_w = 1540
 # fix_img_h =	1000
-max_count = 85
+max_count = 300
 total_count = 0
 c = 0
 print "find high W and H"
@@ -62,6 +62,7 @@ print "img_w:", high_img_w,"img_h",high_img_h ,"total_count:",total_count
 print
 print "making files"
 total_count2 = 0
+total_count3 = 0
 for p in paths:
 	path = p[0]
 	label = p[1] 
@@ -70,10 +71,14 @@ for p in paths:
 	c += 1
 	files = os.listdir(path)
 	for file in files:
-		if count == max_count :
-			break
-		print file, round(total_count2*100.0/total_count,2)
+		if count < max_count :
+			# print "continue", count
+			count += 1
+			total_count3 += 1
+			continue
+		print file, round(total_count3*100.0/total_count,2)
 		total_count2 += 1
+		total_count3 += 1
 
 		f = open(path_to_label + file + '.txt', 'w')
 		row = fish_label(label)
@@ -95,5 +100,5 @@ for p in paths:
 		count += 1
 
 print
-print "img_w:", high_img_w,"img_h",high_img_h ,"total_count:",total_count
+print "img_w:", high_img_w,"img_h",high_img_h ,"total_count:",total_count2
 print "end"

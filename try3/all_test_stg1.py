@@ -4,10 +4,12 @@ import numpy as np
 # test_stg1_fix
 nom_path = "../../data/fish/test_stg1/"
 path_to_img = "../../data/fish/test_stg1_fix/"
-high_img_w = 224
-high_img_h = 224
-# high_img_w = 896
-# high_img_h = 896
+# high_img_w = 224
+# high_img_h = 224
+# high_img_w = 448
+# high_img_h = 448
+high_img_w = 896
+high_img_h = 896
 print "making files"
 total_count2 = 0
 files = os.listdir(nom_path)

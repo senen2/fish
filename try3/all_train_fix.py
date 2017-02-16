@@ -30,8 +30,8 @@ paths = [[nom_path + "/ALB/",1],[nom_path + "/BET/",2],[nom_path + "/DOL/",3],
 		[nom_path + "/LAG/",4],[nom_path + "/NoF/",5],[nom_path + "/OTHER/",6],
 		[nom_path + "/SHARK/",7],[nom_path + "/YFT/",8]]
 
-# high_img_w = 0
-# high_img_h = 0
+# high_img_w = 448
+# high_img_h = 448
 # high_img_w = 1280
 # high_img_h = 1280
 high_img_w = 224
@@ -42,7 +42,7 @@ c_w = 0
 c_h = 0
 # fix_img_w = 1540
 # fix_img_h =	1000
-max_count = 85
+max_count = 3000
 # max_count = 200
 total_count = 0
 c = 0
