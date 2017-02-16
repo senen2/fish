@@ -11,8 +11,8 @@ def param():
            , "cv1_channels": 32
            , "cv2_channels": 64
            , "hidden": 1024
-           , "img_width": 896
-           , "img_height": 896
+           , "img_width": 224
+           , "img_height": 224
            , "categories": 8
            , "learning_rate": 1e-4
            , "dropout": 0.5

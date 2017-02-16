@@ -1,7 +1,0 @@
-submission_39_stg1.csv
-40k img 448 full train cost with y softmax
-auc: 0.997618
-accuracy: 95.76 total good int: 3617.0
-acc by label: 533.53
-cost2 1.41378731225 cost3 1.95821563782
-resp_50_cost_conv6_diff_chan_1
