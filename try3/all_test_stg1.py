@@ -4,6 +4,8 @@ import numpy as np
 # test_stg1_fix
 nom_path = "../../data/fish/test_stg1/"
 path_to_img = "../../data/fish/test_stg1_fix/"
+# high_img_w = 32
+# high_img_h = 32
 high_img_w = 224
 high_img_h = 224
 # high_img_w = 448

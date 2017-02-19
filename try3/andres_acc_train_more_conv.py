@@ -11,7 +11,7 @@ from params import param
 import time
 import os
 
-features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_1")
+features = scipy.io.loadmat("resp_50_cost_conv3_diff_chan_4")
 parameters = param()
 files = os.listdir("../../data/fish/train-fix/")
 samples = len(files)
@@ -35,13 +35,13 @@ img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
 cv_all_size = 5
-cv_all_channels = 1
-last_img_size = 7
+cv_all_channels = 4
+last_img_size = 4
 channels_jpg = 3
 
-filename_queue = tf.train.string_input_producer(img_queue, shuffle=False)
+filename_queue = tf.train.string_input_producer(img_queue, num_epochs=1, shuffle=False)
 
-filename_queue_label = tf.train.string_input_producer(lbl_queue, shuffle=False)
+filename_queue_label = tf.train.string_input_producer(lbl_queue, num_epochs=1, shuffle=False)
 
 image_reader = tf.WholeFileReader()
 label_reader = tf.WholeFileReader()
@@ -67,10 +67,10 @@ W_conv2 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_cha
 b_conv2 = bias_variable([cv_all_channels * 2])
 W_conv3 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 2, cv_all_channels * 4])
 b_conv3 = bias_variable([cv_all_channels * 4])
-W_conv4 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 8])
-b_conv4 = bias_variable([cv_all_channels * 8])
-W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 16])
-b_conv5 = bias_variable([cv_all_channels * 16])
+# W_conv4 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 8])
+# b_conv4 = bias_variable([cv_all_channels * 8])
+# W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 16])
+# b_conv5 = bias_variable([cv_all_channels * 16])
 # W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 16, cv_all_channels * 32])
 # b_conv6 = bias_variable([cv_all_channels * 32])
 # W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 32, cv_all_channels * 64])
@@ -82,7 +82,7 @@ b_conv5 = bias_variable([cv_all_channels * 16])
 # W_conv10 = weight_variable([cv_all_size, cv_all_size, cv_all_channels, cv_all_channels])
 # b_conv10 = bias_variable([cv_all_channels])
 
-W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels * 16, hidden])
+W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels * 4, hidden])
 b_fc1 = bias_variable([hidden])
 W_fc2 = weight_variable([hidden, categories])
 b_fc2 = bias_variable([categories])
@@ -96,10 +96,10 @@ h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
 h_pool3 = max_pool_2x2(h_conv3)
-h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
-h_pool4 = max_pool_2x2(h_conv4)
-h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
-h_pool5 = max_pool_2x2(h_conv5)
+# h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
+# h_pool4 = max_pool_2x2(h_conv4)
+# h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
+# h_pool5 = max_pool_2x2(h_conv5)
 # h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
 # h_pool6 = max_pool_2x2(h_conv6)
 # h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
@@ -111,7 +111,7 @@ h_pool5 = max_pool_2x2(h_conv5)
 # h_conv10 = tf.nn.relu(conv2d(h_pool9, W_conv10) + b_conv10)
 # h_pool10 = max_pool_2x2(h_conv10)
 
-h_pool_last_flat = tf.reshape(h_pool5, [-1, last_img_size * last_img_size  * cv_all_channels * 16])
+h_pool_last_flat = tf.reshape(h_pool3, [-1, last_img_size * last_img_size  * cv_all_channels * 4])
 
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, 1)
@@ -124,7 +124,7 @@ print "h_pool1", h_pool1
 print "h_conv2", h_conv2
 print "h_pool2", h_pool2
 cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred + 1e-20), reduction_indices=[1]))
-cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=tf.nn.softmax(y)))
+cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred2,labels=tf.nn.softmax(y)))
 # cost_1 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=pred,labels=tf.argmax(y, 1)))
 correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -179,7 +179,7 @@ with tf.Session() as sess:
 	# r = []
 	# r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
 	for step in xrange(samples):
-		print "step:",step
+		print "step:",step + 1
 		prob,correct_prediction2,acc,pred_arg,y_arg,y_tes,update_op_auc,auc,cost2,cost3,img_name = sess.run([pred,correct_prediction,accuracy,pred_arg2,y_arg2,y,update_op_auc2,auc2,cost,cost_1,image_name],{ 
 		    W_conv1:features["W_conv1"],
 		    b_conv1:features["b_conv1"][0],
@@ -187,10 +187,10 @@ with tf.Session() as sess:
 		    b_conv2:features["b_conv2"][0],
 		    W_conv3:features["W_conv3"],
 		    b_conv3:features["b_conv3"][0],
-		    W_conv4:features["W_conv4"],
-		    b_conv4:features["b_conv4"][0],
-		    W_conv5:features["W_conv5"],
-		    b_conv5:features["b_conv5"][0],
+		    # W_conv4:features["W_conv4"],
+		    # b_conv4:features["b_conv4"][0],
+		    # W_conv5:features["W_conv5"],
+		    # b_conv5:features["b_conv5"][0],
 		    # W_conv6:features["W_conv6"],
 		    # b_conv6:features["b_conv6"][0],
 		    # W_conv7:features["W_conv7"],

@@ -11,8 +11,8 @@ from params import param
 import time
 import os
 
-features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_1")
-sub_file = "submission_44_stg1.csv"
+features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_4")
+sub_file = "submission_47_stg1.csv"
 parameters = param()
 # files = os.listdir("../../data/fish/train-fix/")
 files = os.listdir("../../data/fish/test_stg1_fix/")
@@ -27,12 +27,12 @@ img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
 cv_all_size = 5
-cv_all_channels = 1
+cv_all_channels = 4
 last_img_size = 7
 channels_jpg = 3
 
 filename_queue = tf.train.string_input_producer(
-    tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), shuffle=False)
+    tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), num_epochs=1, shuffle=False)
 
 # filename_queue_label = tf.train.string_input_producer(
 #     tf.train.match_filenames_once("../../data/fish/label-train-fix/*.txt"), shuffle=False)

@@ -8,20 +8,14 @@ import numpy as np
 from apifish import *
 import scipy.io
 from params import param
-import time
 import os
 
 features = scipy.io.loadmat("resp_conv10_pool5_imgNet_chan_1")
+sub_file = "submission_imgNet_7_stg1.csv"
 parameters = param()
-files = os.listdir("../../data/fish/train-fix/")
+# files = os.listdir("../../data/fish/train-fix/")
+files = os.listdir("../../data/fish/test_stg1_fix/")
 samples = len(files)
-img_path = "../../data/fish/train-fix/"
-lbl_path = "../../data/fish/label-train-fix/"
-img_queue = []
-lbl_queue = []
-for file in files:
-    img_queue.append(img_path + file)
-    lbl_queue.append(lbl_path + file +".txt")
 
 cv1_size = parameters["cv1_size"]
 cv2_size = parameters["cv2_size"]
@@ -36,15 +30,12 @@ cv_all_channels = 1
 last_img_size = 7
 channels_jpg = 1
 
-filename_queue = tf.train.string_input_producer(img_queue, num_epochs=1, shuffle=False)
-
-filename_queue_label = tf.train.string_input_producer(lbl_queue, num_epochs=1, shuffle=False)
+filename_queue = tf.train.string_input_producer(
+    tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), shuffle=False)
 
 image_reader = tf.WholeFileReader()
-label_reader = tf.WholeFileReader()
 
-_ , image_file = image_reader.read(filename_queue)
-_ , label_file = label_reader.read(filename_queue_label)
+image_name , image_file = image_reader.read(filename_queue)
 
 ratio_jpg = 1
 img_height = img_height/ratio_jpg
@@ -52,12 +43,6 @@ img_width = img_width/ratio_jpg
 
 x = tf.image.decode_jpeg(image_file, channels=channels_jpg, ratio=ratio_jpg)
 x.set_shape([img_height, img_width, channels_jpg])
-
-record_defaults = [[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]]
-col1, col2, col3, col4, col5, col6, col7, col8 = tf.decode_csv(label_file, record_defaults=record_defaults)
-y = tf.pack([col1, col2, col3, col4, col5, col6, col7, col8])
-y = tf.pack([y])
-
 
 W_conv1 = weight_variable([cv_all_size, cv_all_size, channels_jpg, cv_all_channels])
 b_conv1 = bias_variable([cv_all_channels])
@@ -122,70 +107,29 @@ h_pool_last_flat = tf.reshape(h_pool10, [-1, last_img_size * last_img_size  * cv
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, 1)
 pred = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
-pred2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
-print "pred", pred
+print pred
 print "h_conv1", h_conv1
-# print "h_pool1", h_pool1
 print "h_conv2", h_conv2
-# print "h_pool2", h_pool2
-cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred + 1e-20), reduction_indices=[1]))
-# cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=y))
-cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred2,labels=tf.nn.softmax(y)))
-correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+print "h_pool2", h_pool2
+# correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+# accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 pred_arg2 = tf.argmax(pred, 1)
-y_arg2 = tf.argmax(y, 1)
-auc2, update_op_auc2 = tf.contrib.metrics.streaming_auc(pred, y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
-
-print "y",y
-print "pred", pred
+# y_arg2 = tf.argmax(y, 1)
+# print "y",y
+# print "pred", pred
 
 init = tf.global_variables_initializer()
 acc_total = 0.0
 
-alb = 0
-bet = 0
-dol = 0
-lag = 0
-nof = 0
-other = 0
-shark = 0
-yft = 0
-
-alb2 = 1e-20
-bet2 = 1e-20
-dol2 = 1e-20
-lag2 = 1e-20
-nof2 = 1e-20
-other2 = 1e-20
-shark2 = 1e-20
-yft2 = 1e-20
-
-alb_total = 1719
-bet_total = 200
-dol_total = 117
-lag_total = 67
-nof_total = 465
-other_total = 299
-shark_total = 176
-yft_total = 734
-
-total_cost2 = 0
-total_cost3 = 0
-test_acc = 0
 with tf.Session() as sess:
-	sess.run(tf.local_variables_initializer())
 	sess.run(init)
 	coord = tf.train.Coordinator()
 	threads = tf.train.start_queue_runners(coord=coord, sess=sess)
-	# sleep = 5
-	# print "sleep:",sleep
-	# time.sleep(sleep)
 	r = []
 	r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
 	for step in xrange(samples):
 		print "step:",step
-		prob,correct_prediction2,acc,pred_arg,y_arg,y_tes,update_op_auc,auc,cost2,cost3 = sess.run([pred,correct_prediction,accuracy,pred_arg2,y_arg2,y,update_op_auc2,auc2,cost,cost_1],{ 
+		prob, img_name,pred_arg = sess.run([pred,image_name,pred_arg2],{ 
 		    W_conv1:features["W_conv1"],
 		    b_conv1:features["b_conv1"][0],
 		    W_conv2:features["W_conv2"],
@@ -209,68 +153,18 @@ with tf.Session() as sess:
 		    W_fc1:features["W_fc1"],
 		    b_fc1:features["b_fc1"][0],
 		    W_fc2:features["W_fc2"],
-		    b_fc2:features["b_fc2"][0]                          
+		    b_fc2:features["b_fc2"][0]
 		  })
-		y_arg = y_arg[0]
-		pred_arg = pred_arg[0]
-		correct_prediction2 = correct_prediction2[0]
-		total_cost2 += cost2
-		total_cost3 += cost3
-		print "auc:", auc,"update_op_auc:",update_op_auc
-		if correct_prediction2 == True:
-			if y_arg == 0:
-				alb += 1
-			elif y_arg == 1:
-			    bet += 1
-			elif y_arg == 2:
-			    dol += 1
-			elif y_arg == 3:
-			    lag += 1
-			elif y_arg == 4:
-			    nof += 1
-			elif y_arg == 5:
-			    other += 1
-			elif y_arg == 6:
-			    shark += 1
-			elif y_arg == 7:
-			    yft += 1
-		if y_arg == y_arg:
-			if y_arg == 0:
-				alb2 += 1
-			elif y_arg == 1:
-			    bet2 += 1
-			elif y_arg == 2:
-			    dol2 += 1
-			elif y_arg == 3:
-			    lag2 += 1
-			elif y_arg == 4:
-			    nof2 += 1
-			elif y_arg == 5:
-			    other2 += 1
-			elif y_arg == 6:
-			    shark2 += 1
-			elif y_arg == 7:
-			    yft2 += 1
-		acc_total += acc
-		# if step >= 30:
+		prob = prob[0]
+		img = img_name[30:]
+		# rest_all = 0.0
+		# prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7] = rest_all,rest_all,rest_all,rest_all,rest_all,rest_all,rest_all,rest_all
+		# prob[pred_arg] = 0.99
+		r.append([str(img), prob[0],prob[1],prob[2],prob[3],prob[4],prob[5],prob[6],prob[7]])
+		# if step >= 10:
 		# 	break
-	auc = auc2.eval()
-	acc_label = (alb*100.0/alb_total + bet*100.0/bet_total + dol*100.0/dol_total + lag*100.0/lag_total +
-				nof*100.0/nof_total + other*100.0/other_total + shark*100.0/shark_total + yft*100.0/yft_total) / 8.0
-	print
-	print "auc:", auc
-	print "accuracy:", round(acc_total*100.0/samples,2),"total good int:",acc_total
-	print "acc by label:", round(acc_label,2)
-	print "cost2:", total_cost2*1.0/samples, "cost3:", total_cost3*1.0/samples
-	print
-	print "ALB  ", round(alb*100.0/alb2,2),"total good int:",alb, "of", alb2
-	print "BET  ", round(bet*100.0/bet2,2),"total good int:",bet, "of", bet2
-	print "DOL  ", round(dol*100.0/dol2,2),"total good int:",dol, "of", dol2
-	print "LAG  ", round(lag*100.0/lag2,2),"total good int:",lag, "of", lag2
-	print "NoF  ", round(nof*100.0/nof2,2),"total good int:",nof, "of", nof2
-	print "OTHER", round(other*100.0/other2,2),"total good int:",other, "of", other2
-	print "SHARK", round(shark*100.0/shark2,2),"total good int:",shark, "of", shark2
-	print "YFT  ", round(yft*100.0/yft2,2),"total good int:",yft, "of", yft2
-	print
+	print "image,ALB,BET,DOL,LAG,NoF,OTHER,SHARK,YFT"
+	np.savetxt(sub_file, r, delimiter=',', fmt="%s,%s,%s,%s,%s,%s,%s,%s,%s")
 
 sess.close()
+print sub_file
