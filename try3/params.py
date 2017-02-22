@@ -10,10 +10,10 @@ def param():
            , "cv2_size": 5
            , "cv1_channels": 32
            , "cv2_channels": 64
-           # , "hidden": 1024
+           , "hidden": 1024
            , "img_width": 224
            , "img_height": 224
-           , "hidden": 32
+           # , "hidden": 32
            # , "img_width": 32
            # , "img_height": 32
            , "categories": 8
