@@ -34,7 +34,7 @@ hidden = parameters["hidden"]
 img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
-cv_all_size = 5
+cv_all_size = 7
 cv_all_channels = 1
 last_img_size = 7
 channels_jpg = 1
@@ -55,6 +55,9 @@ img_width = img_width/ratio_jpg
 
 x = tf.image.decode_jpeg(image_file, channels=channels_jpg, ratio=ratio_jpg)
 x.set_shape([img_height, img_width, channels_jpg])
+
+x = tf.cast(x, tf.float32)
+x = tf.nn.l2_normalize(x, dim=0)
 
 record_defaults = [[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]]
 col1, col2, col3, col4, col5, col6, col7, col8 = tf.decode_csv(label_file, record_defaults=record_defaults)
@@ -187,10 +190,10 @@ with tf.Session() as sess:
 		    b_conv2:features["b_conv2"][0],
 		    W_conv3:features["W_conv3"],
 		    b_conv3:features["b_conv3"][0],
-		    # W_conv4:features["W_conv4"],
-		    # b_conv4:features["b_conv4"][0],
-		    # W_conv5:features["W_conv5"],
-		    # b_conv5:features["b_conv5"][0],
+		    W_conv4:features["W_conv4"],
+		    b_conv4:features["b_conv4"][0],
+		    W_conv5:features["W_conv5"],
+		    b_conv5:features["b_conv5"][0],
 		    # W_conv6:features["W_conv6"],
 		    # b_conv6:features["b_conv6"][0],
 		    # W_conv7:features["W_conv7"],
@@ -268,13 +271,14 @@ with tf.Session() as sess:
 		# if step >= 30:
 		# 	break
 	auc = auc2.eval()
+	total_s = alb2 + bet2 + dol2 + lag2 + nof2 + other2 + shark2 + yft2
 	acc_label = (alb*100.0/alb_total + bet*100.0/bet_total + dol*100.0/dol_total + lag*100.0/lag_total +
 				nof*100.0/nof_total + other*100.0/other_total + shark*100.0/shark_total + yft*100.0/yft_total) / 8.0
 	print
 	print "auc:", auc
-	print "accuracy:", round(acc_total*100.0/samples,2),"total good int:",acc_total
+	print "accuracy:", round(acc_total*100.0/total_s,2),"total good int:",acc_total
 	print "acc by label:", round(acc_label,2)
-	print "cost2:", total_cost2*1.0/samples, "cost3:", total_cost3*1.0/samples
+	print "cost2:", total_cost2*1.0/total_s, "cost3:", total_cost3*1.0/total_s
 	print
 	print "ALB  ", round(alb*100.0/alb2,2),"total good int:",alb, "of", alb2
 	print "BET  ", round(bet*100.0/bet2,2),"total good int:",bet, "of", bet2

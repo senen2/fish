@@ -11,7 +11,7 @@ from params import param
 import time
 import os
 
-features = scipy.io.loadmat("resp_conv10_pool5_imgNet_chan_1")
+features = scipy.io.loadmat("resp_conv16_pool5_imgNet_chan_1")
 parameters = param()
 files = os.listdir("../../data/fish/train-fix/")
 samples = len(files)
@@ -31,7 +31,7 @@ hidden = parameters["hidden"]
 img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
-cv_all_size = 3
+cv_all_size = 7
 cv_all_channels = 1
 last_img_size = 7
 channels_jpg = 1
@@ -73,69 +73,87 @@ W_conv5 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 2, cv_all
 b_conv5 = bias_variable([cv_all_channels * 4])
 W_conv6 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 4])
 b_conv6 = bias_variable([cv_all_channels * 4])
+W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 4])
+b_conv7 = bias_variable([cv_all_channels * 4])
+W_conv8 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 4])
+b_conv8 = bias_variable([cv_all_channels * 4])
 
-W_conv7 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 8])
-b_conv7 = bias_variable([cv_all_channels * 8])
-W_conv8 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
-b_conv8 = bias_variable([cv_all_channels * 8])
+W_conv9 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 4, cv_all_channels * 8])
+b_conv9 = bias_variable([cv_all_channels * 8])
+W_conv10 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv10 = bias_variable([cv_all_channels * 8])
+W_conv11 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv11 = bias_variable([cv_all_channels * 8])
+W_conv12 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv12 = bias_variable([cv_all_channels * 8])
 
-W_conv9 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 16])
-b_conv9 = bias_variable([cv_all_channels * 16])
-W_conv10 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 16, cv_all_channels * 32])
-b_conv10 = bias_variable([cv_all_channels * 32])
+W_conv13 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv13 = bias_variable([cv_all_channels * 8])
+W_conv14 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv14 = bias_variable([cv_all_channels * 8])
+W_conv15 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv15 = bias_variable([cv_all_channels * 8])
+W_conv16 = weight_variable([cv_all_size, cv_all_size, cv_all_channels * 8, cv_all_channels * 8])
+b_conv16 = bias_variable([cv_all_channels * 8])
 
-W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels * 32, hidden])
+W_fc1 = weight_variable([last_img_size * last_img_size * cv_all_channels * 8, hidden])
 b_fc1 = bias_variable([hidden])
-W_fc2 = weight_variable([hidden, categories])
-b_fc2 = bias_variable([categories])
+W_fc2 = weight_variable([hidden, hidden])
+b_fc2 = bias_variable([hidden])
+W_fc3 = weight_variable([hidden, categories])
+b_fc3 = bias_variable([categories])
 
 x = tf.reshape(tf.cast(x, tf.float32), [-1,img_width,img_height,channels_jpg])
 
 # conv
 h_conv1 = tf.nn.relu(conv2d(x, W_conv1) + b_conv1)
-# h_pool1 = max_pool_2x2(h_conv1)
 h_conv2 = tf.nn.relu(conv2d(h_conv1, W_conv2) + b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
 h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
-# h_pool3 = max_pool_2x2(h_conv3)
 h_conv4 = tf.nn.relu(conv2d(h_conv3, W_conv4) + b_conv4)
 h_pool4 = max_pool_2x2(h_conv4)
 
 h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
-# h_pool5 = max_pool_2x2(h_conv5)
 h_conv6 = tf.nn.relu(conv2d(h_conv5, W_conv6) + b_conv6)
-h_pool6 = max_pool_2x2(h_conv6)
-
-h_conv7 = tf.nn.relu(conv2d(h_pool6, W_conv7) + b_conv7)
-# h_pool7 = max_pool_2x2(h_conv7)
+h_conv7 = tf.nn.relu(conv2d(h_conv6, W_conv7) + b_conv7)
 h_conv8 = tf.nn.relu(conv2d(h_conv7, W_conv8) + b_conv8)
 h_pool8 = max_pool_2x2(h_conv8)
 
 h_conv9 = tf.nn.relu(conv2d(h_pool8, W_conv9) + b_conv9)
-# h_pool9 = max_pool_2x2(h_conv9)
 h_conv10 = tf.nn.relu(conv2d(h_conv9, W_conv10) + b_conv10)
-h_pool10 = max_pool_2x2(h_conv10)
+h_conv11 = tf.nn.relu(conv2d(h_conv10, W_conv11) + b_conv11)
+h_conv12 = tf.nn.relu(conv2d(h_conv11, W_conv12) + b_conv12)
+h_pool12 = max_pool_2x2(h_conv12)
 
-h_pool_last_flat = tf.reshape(h_pool10, [-1, last_img_size * last_img_size  * cv_all_channels * 32])
+h_conv13 = tf.nn.relu(conv2d(h_pool12, W_conv13) + b_conv13)
+h_conv14 = tf.nn.relu(conv2d(h_conv13, W_conv14) + b_conv14)
+h_conv15 = tf.nn.relu(conv2d(h_conv14, W_conv15) + b_conv15)
+h_conv16 = tf.nn.relu(conv2d(h_conv15, W_conv16) + b_conv16)
+h_pool16 = max_pool_2x2(h_conv16)
 
+h_pool_last_flat = tf.reshape(h_pool16, [-1, last_img_size * last_img_size  * cv_all_channels * 8])
+
+# full conected
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_last_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, 1)
-pred = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
-pred2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+h_fc2 = tf.nn.relu(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
+h_fc2_drop = tf.nn.dropout(h_fc2, 1)
+pred2 = tf.nn.softmax(tf.matmul(h_fc2_drop, W_fc3) + b_fc3)
+pred = tf.matmul(h_fc2_drop, W_fc3) + b_fc3
 print "pred", pred
 print "h_conv1", h_conv1
 # print "h_pool1", h_pool1
 print "h_conv2", h_conv2
 # print "h_pool2", h_pool2
-cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred + 1e-20), reduction_indices=[1]))
+cost = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred2 + 1e-20), reduction_indices=[1]))
 # cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=y))
-cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred2,labels=tf.nn.softmax(y)))
+cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=tf.nn.softmax(y)))
 correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 pred_arg2 = tf.argmax(pred, 1)
 y_arg2 = tf.argmax(y, 1)
-auc2, update_op_auc2 = tf.contrib.metrics.streaming_auc(pred, y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
+auc2, update_op_auc2 = tf.contrib.metrics.streaming_auc(pred2, y, weights=None, num_thresholds=200, metrics_collections=None, updates_collections=None, curve='ROC', name=None)
 
 print "y",y
 print "pred", pred
@@ -181,8 +199,8 @@ with tf.Session() as sess:
 	# sleep = 5
 	# print "sleep:",sleep
 	# time.sleep(sleep)
-	r = []
-	r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
+	# r = []
+	# r.append(["image","ALB","BET","DOL","LAG","NoF","OTHER","SHARK","YFT"])
 	for step in xrange(samples):
 		print "step:",step
 		prob,correct_prediction2,acc,pred_arg,y_arg,y_tes,update_op_auc,auc,cost2,cost3 = sess.run([pred,correct_prediction,accuracy,pred_arg2,y_arg2,y,update_op_auc2,auc2,cost,cost_1],{ 
@@ -206,10 +224,24 @@ with tf.Session() as sess:
 		    b_conv9:features["b_conv9"][0],
 		    W_conv10:features["W_conv10"],
 		    b_conv10:features["b_conv10"][0],
+		    W_conv11:features["W_conv11"],
+		    b_conv11:features["b_conv11"][0],
+		    W_conv12:features["W_conv12"],
+		    b_conv12:features["b_conv12"][0],
+		    W_conv13:features["W_conv13"],
+		    b_conv13:features["b_conv13"][0],
+		    W_conv14:features["W_conv14"],
+		    b_conv14:features["b_conv14"][0],
+		    W_conv15:features["W_conv15"],
+		    b_conv15:features["b_conv15"][0],
+		    W_conv16:features["W_conv16"],
+		    b_conv16:features["b_conv16"][0],
 		    W_fc1:features["W_fc1"],
 		    b_fc1:features["b_fc1"][0],
 		    W_fc2:features["W_fc2"],
-		    b_fc2:features["b_fc2"][0]                          
+		    b_fc2:features["b_fc2"][0],
+		    W_fc3:features["W_fc3"],
+		    b_fc3:features["b_fc3"][0]    
 		  })
 		y_arg = y_arg[0]
 		pred_arg = pred_arg[0]
@@ -255,8 +287,8 @@ with tf.Session() as sess:
 		# if step >= 30:
 		# 	break
 	auc = auc2.eval()
-	acc_label = (alb*100.0/alb_total + bet*100.0/bet_total + dol*100.0/dol_total + lag*100.0/lag_total +
-				nof*100.0/nof_total + other*100.0/other_total + shark*100.0/shark_total + yft*100.0/yft_total) / 8.0
+	acc_label = (alb*100.0/alb2 + bet*100.0/bet2 + dol*100.0/dol2 + lag*100.0/lag2 +
+				nof*100.0/nof2 + other*100.0/other2 + shark*100.0/shark2 + yft*100.0/yft2) / 8.0
 	print
 	print "auc:", auc
 	print "accuracy:", round(acc_total*100.0/samples,2),"total good int:",acc_total
@@ -273,4 +305,6 @@ with tf.Session() as sess:
 	print "YFT  ", round(yft*100.0/yft2,2),"total good int:",yft, "of", yft2
 	print
 
+coord.request_stop()
+coord.join(threads)
 sess.close()

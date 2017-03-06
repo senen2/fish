@@ -15,10 +15,10 @@ import time
 import os
 
 print "initialize"
-files = os.listdir("../../data/fish/train-fix/")
+img_path = "../../data/fish/train-img-type2/"
+lbl_path = "../../data/fish/train-lbl-type2/"
+files = os.listdir(img_path)
 samples = len(files)
-img_path = "../../data/fish/train-fix/"
-lbl_path = "../../data/fish/label-train-fix/"
 img_queue = []
 lbl_queue = []
 for file in files:
@@ -45,16 +45,16 @@ categories = parameters["categories"]
 learning_rate = parameters["learning_rate"]
 # dropout = parameters["dropout"]
 dropout = 0.5
-# beta = 0.001
-beta = 0.17 # only y
+beta = 0.001
+# beta = 0.17 # only y
 # beta = 0.01 # softmax on y
 save_epoch = 1000
-cv_all_size = 7
+cv_all_size = 5
 cv_all_channels = 1
 last_img_size = 7
 batch_size = 1
 channels_jpg = 1
-mat_name_file = "_conv5_diff_chan_" + str(cv_all_channels)
+mat_name_file = "_conv5_type2_chan_" + str(cv_all_channels)
 
 best_cost = 1e99
 best_acc = 0
@@ -80,15 +80,12 @@ label = tf.pack([col1, col2, col3, col4, col5, col6, col7, col8])
 # min_after_dequeue + 3 * batch_size
 x, y = tf.train.shuffle_batch(
     [image, label], batch_size = batch_size, 
-    capacity = 31000,
+    capacity = 10000,
     min_after_dequeue = 100)
 
 x = tf.cast(x, tf.float32)
 y = tf.cast(y, tf.float32)
 keep_prob = tf.placeholder(tf.float32)
-
-# tf.nn.l2_normalize(x, dim, epsilon=1e-12, name=None)
-x = tf.nn.l2_normalize(x, dim=0)
   
 W_conv1 = weight_variable([cv_all_size, cv_all_size, channels_jpg, cv_all_channels])
 b_conv1 = bias_variable([cv_all_channels])
@@ -329,6 +326,6 @@ print ("    %s      %s        %s       %s          %s            %s        %s   
 print "Cost", cost
 
 print "saving last"
-scipy.io.savemat("resp_50_cost" + str(mat_name_file), features, do_compression=True)
-print "resp_50_cost" + str(mat_name_file)
+scipy.io.savemat("resp" + str(mat_name_file), features, do_compression=True)
+print "resp" + str(mat_name_file)
 print "end"

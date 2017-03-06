@@ -23,12 +23,29 @@ def fish_label(name):
         
     return a
 
-nom_path = "../../data/fish/train"
+nom_path = "../../data/fish/train/"
 path_to_img = "../../data/fish/train-fix2/"
 path_to_label = "../../data/fish/label-train-fix2/"
-paths = [[nom_path + "/ALB/",1],[nom_path + "/BET/",2],[nom_path + "/DOL/",3],
-		[nom_path + "/LAG/",4],[nom_path + "/NoF/",5],[nom_path + "/OTHER/",6],
-		[nom_path + "/SHARK/",7],[nom_path + "/YFT/",8]]
+paths = [[nom_path + "ALB/",1],[nom_path + "BET/",2],[nom_path + "DOL/",3],
+		[nom_path + "LAG/",4],[nom_path + "NoF/",5],[nom_path + "OTHER/",6],
+		[nom_path + "SHARK/",7],[nom_path + "YFT/",8]]
+
+print "deleting img..."
+files1 = os.listdir(path_to_img)
+temp = len(files1)
+t = 0
+for file in files1:
+	os.remove(path_to_img + file)
+	print "del img", t*1.0/temp
+	t += 1
+print "deleting labels..."
+files1 = os.listdir(path_to_label)
+temp = len(files1)
+t = 0
+for file in files1:
+	os.remove(path_to_label + file)
+	print "del label", t*1.0/temp
+	t += 1
 
 # high_img_w = 0
 # high_img_h = 0
@@ -42,7 +59,7 @@ c_w = 0
 c_h = 0
 # fix_img_w = 1540
 # fix_img_h =	1000
-max_count = 300
+max_count = 0
 total_count = 0
 c = 0
 print "find high W and H"

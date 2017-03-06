@@ -11,8 +11,8 @@ from params import param
 import time
 import os
 
-features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_4")
-sub_file = "submission_47_stg1.csv"
+features = scipy.io.loadmat("resp_50_cost_conv5_diff_chan_1")
+sub_file = "submission_64_stg1.csv"
 parameters = param()
 # files = os.listdir("../../data/fish/train-fix/")
 files = os.listdir("../../data/fish/test_stg1_fix/")
@@ -26,13 +26,13 @@ hidden = parameters["hidden"]
 img_width = parameters["img_width"]
 img_height = parameters["img_height"]
 categories = parameters["categories"]
-cv_all_size = 5
-cv_all_channels = 4
+cv_all_size = 7
+cv_all_channels = 1
 last_img_size = 7
-channels_jpg = 3
+channels_jpg = 1
 
 filename_queue = tf.train.string_input_producer(
-    tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), num_epochs=1, shuffle=False)
+    tf.train.match_filenames_once("../../data/fish/test_stg1_fix/*.jpg"), shuffle=False)
 
 # filename_queue_label = tf.train.string_input_producer(
 #     tf.train.match_filenames_once("../../data/fish/label-train-fix/*.txt"), shuffle=False)
@@ -49,6 +49,9 @@ img_width = img_width/ratio_jpg
 
 x = tf.image.decode_jpeg(image_file, channels=channels_jpg, ratio=ratio_jpg)
 x.set_shape([img_height, img_width, channels_jpg])
+
+x = tf.cast(x, tf.float32)
+x = tf.nn.l2_normalize(x, dim=0)
 
 # record_defaults = [[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]]
 # col1, col2, col3, col4, col5, col6, col7, col8 = tf.decode_csv(label_file, record_defaults=record_defaults)
@@ -184,7 +187,11 @@ with tf.Session() as sess:
 	print "image,ALB,BET,DOL,LAG,NoF,OTHER,SHARK,YFT"
 	np.savetxt(sub_file, r, delimiter=',', fmt="%s,%s,%s,%s,%s,%s,%s,%s,%s")
 
-# coord.join(threads)
-# coord.request_stop()
+
+coord.request_stop()
+try:
+	coord.join(threads)
+except:
+	pass
 sess.close()
 print sub_file
